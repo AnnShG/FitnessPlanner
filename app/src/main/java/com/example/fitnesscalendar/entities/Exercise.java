@@ -37,10 +37,6 @@ public class Exercise {
     @ColumnInfo(name = "notes")
     public String note;
 
-//    @ColumnInfo(name = "difficulty_level")
-//    public String difficultyLevel;
-
     @ColumnInfo(name = "user_created")
     public Boolean userCreated; // true for user-created, false for system-provided
-
 }

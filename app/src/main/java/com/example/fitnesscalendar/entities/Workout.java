@@ -39,9 +39,6 @@ public class  Workout {
     @ColumnInfo(name = "colour")
     public Integer colour;
 
-    //    @ColumnInfo(name = "difficulty_level")
-//    public String difficultyLevel;
-
     @ColumnInfo(name = "user_created")
     public Boolean userCreated;
 }

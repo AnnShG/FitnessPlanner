@@ -15,7 +15,6 @@ import androidx.room.Index;
 public class ExerciseCategoryCrossRef {
     @ColumnInfo(name = "exercise_id")
     public long exerciseId;
-
     @ColumnInfo(name = "category_id")
     public long categoryId;
 }
