@@ -139,10 +139,6 @@ public class WorkoutViewModel extends AndroidViewModel {
         workoutRepository.deleteOnlyPlannedWorkoutsFromCalendar(userId, workoutId);
     }
 
-//    public void deleteOnlyPlannedWorkoutsFromCalendar(long userId, long workoutId) {
-//        workoutRepository.deleteOnlyPlannedWorkoutsFromCalendar(userId, workoutId);
-//    }
-
     public void updateWorkoutPlan(long userId, long workoutId, Set<Long> newEpochDays, Set<Long> completedDays) {
         workoutRepository.updateWorkoutPlan(userId, workoutId, newEpochDays, completedDays);
     }
@@ -161,34 +157,35 @@ public class WorkoutViewModel extends AndroidViewModel {
 
     // requests DB data, sends to repo, and returns the response
     public void refreshAiInsight(UserWithGoals userWithGoals, List<DateColourResult> history) {
+        long currentUserId = userWithGoals.user.id;
+        
         // new user?
         long registrationDate = userWithGoals.user.createdAt.getTime();
-        long fourteenDaysInMillis = 7L * 24 * 60 * 60 * 1000;
+        long sevenDaysInMillis = 7L * 24 * 60 * 60 * 1000;
 
-        if ((System.currentTimeMillis() - registrationDate) < fourteenDaysInMillis) {
+        if ((System.currentTimeMillis() - registrationDate) < sevenDaysInMillis) {
             aiAdvice.postValue("Learning your fitness habits. Personalized insights will appear here after 7 days of activity logging.");
             return;
         }
-        // after 14 days - request the advice
 
         isAiLoading.setValue(true);
 
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            // getting chat history from DB
-            List<AiMessage> chatHistory = workoutRepository.getAiChatHistory();
+            // getting chat history from DB for this user
+            List<AiMessage> chatHistory = workoutRepository.getAiChatHistoryForUser(currentUserId);
 
             String lastAdvice = "";
-            for (int i = chatHistory.size() - 1; i >= 0; i--) {
-                if ("model".equals(chatHistory.get(i).getRole())) {
-                    lastAdvice = chatHistory.get(i).getContent();
+            for (AiMessage msg : chatHistory) {
+                if ("model".equals(msg.getRole())) {
+                    lastAdvice = msg.getContent();
                     break;
                 }
             }
 
             String prompt = aiRepository.buildPrompt(userWithGoals, history, lastAdvice);
 
-            // save user request in local DB
-            workoutRepository.saveAiMessage(new AiMessage("user", prompt));
+            // save user request in local DB with currentUserId
+            workoutRepository.saveAiMessage(new AiMessage(currentUserId, "user", prompt));
 
             // Gemini request
             ListenableFuture<GenerateContentResponse> future = aiRepository.getAdvice(prompt, chatHistory);
@@ -200,8 +197,8 @@ public class WorkoutViewModel extends AndroidViewModel {
                     String text = result.getText();
                     aiAdvice.postValue(text);
 
-                    // saving the AI response to DB
-                    workoutRepository.saveAiMessage(new AiMessage("model", text));
+                    // saving the AI response to DB with currentUserId
+                    workoutRepository.saveAiMessage(new AiMessage(currentUserId, "model", text));
                 }
 
                 @Override
