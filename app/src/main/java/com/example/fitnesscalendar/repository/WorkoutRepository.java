@@ -131,12 +131,6 @@ public class WorkoutRepository {
         return calendarDao.getUniquePlannedWorkouts(userId);
     }
 
-//    public void deleteWorkoutFromCalendar(long userId, long workoutId) {
-//        databaseExecutor.execute(() -> {
-//            calendarDao.deleteWorkoutFromCalendar(userId, workoutId);
-//        });
-//    }
-
     public void deleteOnlyPlannedWorkoutsFromCalendar(long userId, long workoutId) {
         databaseExecutor.execute(() -> {
             workoutDao.deleteOnlyPlannedWorkoutsFromCalendar(userId, workoutId);
@@ -189,10 +183,11 @@ public class WorkoutRepository {
         });
     }
 
-    // receives the chat history from the DB
-    public List<AiMessage> getAiChatHistory() {
-        return aiDao.getChatHistory();
+    // receives the chat history from the DB for a specific user
+    public List<AiMessage> getAiChatHistoryForUser(long userId) {
+        return aiDao.getChatHistoryForUser(userId);
     }
+
     public void saveAiMessage(AiMessage message) {
         AppDatabase.databaseWriteExecutor.execute(() -> aiDao.insert(message));
     }

@@ -24,7 +24,7 @@ public class AiRepository {
     private final GenerativeModelFutures model;
 
     public AiRepository() {
-        // initialize Gemini 1.5 Flash
+        // initialize Gemini 2.5 Flash Lite
         GenerativeModel gm = FirebaseVertexAI.getInstance()
                 .generativeModel("gemini-2.5-flash-lite");
         this.model = GenerativeModelFutures.from(gm);

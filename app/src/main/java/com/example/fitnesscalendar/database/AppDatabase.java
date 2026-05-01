@@ -27,11 +27,10 @@ import com.example.fitnesscalendar.relations.*;
 @Database(
         entities= {
                 User.class, CalendarDay.class, Quote.class, Exercise.class, Workout.class,
-                Category.class, Step.class, Goal.class,  UserWorkoutCrossRef.class,
+                Category.class, Step.class, Goal.class, AiMessage.class,
                 ExerciseCategoryCrossRef.class, WorkoutExerciseCrossRef.class, CalendarDayWorkoutCrossRef.class,
-                AiMessage.class
 },
-        version = 28,
+        version = 30,
         exportSchema = false
 )
 @TypeConverters({Converters.class})
@@ -54,16 +53,27 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * Database Lifecycle Callback.
-     * Logic here runs when the database is first created or every time it is opened.
      */
-    static final Migration MIGRATION_27_28 = new Migration(27, 28) {
+    static final Migration MIGRATION_28_29 = new Migration(28, 29) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            // database.execSQL("ALTER TABLE exercises ADD COLUMN level TEXT DEFAULT 'Beginner'");
-            
-            // database.execSQL("CREATE TABLE IF NOT EXISTS `new_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT)");
-            
-            // empty if no changes
+            database.execSQL("DROP TABLE IF EXISTS user_workout_cross_ref");
+        }
+    };
+
+    static final Migration MIGRATION_29_30 = new Migration(29, 30) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE IF EXISTS ai_messages");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `ai_messages` (" +
+                    "`message_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`user_id` INTEGER NOT NULL, " +
+                    "`role` TEXT, " +
+                    "`content` TEXT, " +
+                    "`timestamp` INTEGER, " +
+                    "FOREIGN KEY(`user_id`) REFERENCES `users`(`user_id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+
+            database.execSQL("CREATE INDEX IF NOT EXISTS `index_ai_messages_user_id` ON `ai_messages` (`user_id`) ");
         }
     };
 
@@ -96,7 +106,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * Singleton getter for the database.
-     * Uses double-check to ensure thread safety.
      */
     public static AppDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
@@ -106,7 +115,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             context.getApplicationContext(),
                             AppDatabase.class, "fitness_calendar_db")
                                 .addCallback(roomCallback)
-                                .addMigrations(MIGRATION_27_28)
+                                .addMigrations(MIGRATION_28_29, MIGRATION_29_30)
                                 .build();
                 }
             }

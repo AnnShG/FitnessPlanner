@@ -19,7 +19,6 @@ import com.bumptech.glide.Glide;
 import com.example.fitnesscalendar.R;
 import com.example.fitnesscalendar.databinding.AddWorkoutScreenBinding;
 import com.example.fitnesscalendar.entities.Workout;
-import com.example.fitnesscalendar.logic.exercise.ExerciseDetailFragment;
 import com.example.fitnesscalendar.logic.exercise.ExerciseViewModel;
 import com.example.fitnesscalendar.relations.FullExerciseRecord;
 import com.example.fitnesscalendar.relations.FullWorkoutRecord;
@@ -37,7 +36,7 @@ public class AddWorkoutFragment extends Fragment {
     private ExerciseViewModel exerciseViewModel;
     private Long currentUserId;
     private final List<Long> selectedExerciseIdList = new ArrayList<>();
-    private Integer selectedWorkoutColor = null;
+    private Integer selectedWorkoutColour = null;
     private long existingWorkoutId = -1; // the workout exists for updating and deleting? -1 it is not
 
 
@@ -67,10 +66,10 @@ public class AddWorkoutFragment extends Fragment {
 
         setupColourSelection();
 
-        if (selectedWorkoutColor != null) {
-            View savedView = getColorViewByValue(selectedWorkoutColor);
+        if (selectedWorkoutColour != null) {
+            View savedView = getColorViewByValue(selectedWorkoutColour);
             if (savedView != null) {
-                selectColour(selectedWorkoutColor, savedView);
+                selectColour(selectedWorkoutColour, savedView);
             }
         }
 
@@ -155,7 +154,7 @@ public class AddWorkoutFragment extends Fragment {
     }
 
     private void selectColour(int color, View view) {
-        this.selectedWorkoutColor = color; // this will be stored in the Workout table
+        this.selectedWorkoutColour = color; // this will be stored in the Workout table
 
         View[] colors = {binding.colorGreen, binding.colorBlue, binding.colorPurple,
                 binding.colorRed, binding.colorDarkBlue, binding.colorGrey, binding.colorYellow}; // array of clickable views
@@ -280,11 +279,11 @@ public class AddWorkoutFragment extends Fragment {
 
         Workout workout = new Workout();
         workout.setTitle(title);
-        workout.setColour(selectedWorkoutColor);
+        workout.setColour(selectedWorkoutColour);
         workout.setDescription(Description);
         workout.setNote(note);
 
-        if (selectedWorkoutColor == null) {
+        if (selectedWorkoutColour == null) {
             Toast.makeText(getContext(), "Please select a workout colour", Toast.LENGTH_SHORT).show();
             return; // stop execution if no color is picked
         }
@@ -321,10 +320,10 @@ public class AddWorkoutFragment extends Fragment {
         binding.workoutNotesInput.setText(record.workout.getNote());
 
         if (record.workout.getColour() != null) {
-            this.selectedWorkoutColor = record.workout.getColour();
-            View colorView = getColorViewByValue(selectedWorkoutColor);
+            this.selectedWorkoutColour = record.workout.getColour();
+            View colorView = getColorViewByValue(selectedWorkoutColour);
             if (colorView != null) {
-                selectColour(selectedWorkoutColor, colorView);
+                selectColour(selectedWorkoutColour, colorView);
             }
         }
 

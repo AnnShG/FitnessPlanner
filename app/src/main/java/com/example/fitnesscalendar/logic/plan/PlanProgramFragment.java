@@ -96,11 +96,6 @@ public class PlanProgramFragment extends Fragment {
                             Toast.makeText(getContext(), "Completed workouts cannot be removed from the plan", Toast.LENGTH_SHORT).show();
                             return; //do not allow unselecting this date
                         }
-
-                        if (completedDatesForThisWorkout.contains(epochDay)) {
-                            Toast.makeText(getContext(), "Completed workouts cannot be removed", Toast.LENGTH_SHORT).show();
-                            return; // BLOCK THE CLICK
-                        }
                     }
 
                     // This part handles the selecting and unselecting (toggling)
