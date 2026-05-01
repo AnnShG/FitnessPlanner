@@ -80,7 +80,7 @@ public class ExercisesListFragment extends Fragment {
 
         binding.searchExerciseField.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) { // handling enter on keyboard
+            public boolean onQueryTextSubmit(String query) {
                 exerciseViewModel.setSearchQuery(query);
                 return true;
             }

@@ -172,7 +172,6 @@ public class FilterScreenFragment extends Fragment {
         selected.addAll(getSelectedIdsFromGroup(binding.filterBasicGroup));
         selected.addAll(getSelectedIdsFromGroup(binding.filterAdvancedGroup));
 
-        Log.d("FILTER_DEBUG", "Final Selection to apply: " + selected.size());
         return selected;
     }
 

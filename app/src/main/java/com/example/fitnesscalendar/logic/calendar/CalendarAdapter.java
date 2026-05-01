@@ -9,12 +9,14 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fitnesscalendar.R;
@@ -214,8 +216,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             if (isSelected && completionDrawable != null) {
                 // COMBO: The user has this day selected AND there are completed workouts
                 // Create a LayerDrawable to stack the grey selection circle under the completion segments
-                Drawable selectionCircle = androidx.core.content.ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.plan_selected_day_circle);
-                android.graphics.drawable.LayerDrawable layerDrawable = new android.graphics.drawable.LayerDrawable(new Drawable[]{selectionCircle, completionDrawable});
+                Drawable selectionCircle = ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.plan_selected_day_circle);
+                LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{selectionCircle, completionDrawable});
                 holder.dayOfMonth.setBackground(layerDrawable);
             } else if (isSelected) {
                 // Only selected, no completions yet
