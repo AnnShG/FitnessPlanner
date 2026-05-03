@@ -38,6 +38,8 @@ android {
 }
 
 dependencies {
+    def room_version = "2.6.1"
+
     // AndroidX & UI
     implementation libs.appcompat
     implementation libs.constraintlayout
@@ -45,8 +47,10 @@ dependencies {
     implementation libs.navigation.ui
     implementation 'com.google.android.material:material:1.10.0'
 
-    implementation "androidx.room:room-runtime:2.6.1"
-    annotationProcessor "androidx.room:room-compiler:2.6.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation libs.room.testing
+    androidTestImplementation "androidx.room:room-testing:$room_version"
     implementation "androidx.room:room-ktx:2.6.1"
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
@@ -57,9 +61,15 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.github.3llomi:CircularStatusView:V1.0.3'
 
-    testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    // Unit Testing
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+    testImplementation "androidx.arch.core:core-testing:2.2.0" // Live Data testing
+
+    // Instrumentation Testing
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
