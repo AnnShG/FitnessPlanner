@@ -14,6 +14,10 @@ import java.util.Locale;
 public class CalendarManager {
     private final Calendar currentDate = Calendar.getInstance();
 
+    public void setCurrentDate(java.util.Date date) {
+        this.currentDate.setTime(date);
+    }
+
     public List<String> getDaysOfMonthList() {
         List<String> daysList = new ArrayList<>();
 
