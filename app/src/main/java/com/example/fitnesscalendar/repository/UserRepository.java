@@ -52,6 +52,12 @@ public class UserRepository {
         goalDao = db.goalDao();
     }
 
+    // for testing purposes
+    public UserRepository(UserDao userDao, GoalDao goalDao) {
+        this.userDao = userDao;
+        this.goalDao = goalDao;
+    }
+
     public void insertUserWithGoals(User user, List<Goal> goals) {
         databaseExecutor.execute(() -> {
             long newUserId = userDao.insert(user);
@@ -85,11 +91,6 @@ public class UserRepository {
     public boolean hasUser() {
         return userDao.getUserCount() > 0;
     }
-
-    public Executor getDatabaseExecutor() {
-        return databaseExecutor;
-    }
-
 
     public void updateUserGoals(Long userId, List<String> goalTitles, String customGoalText) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
