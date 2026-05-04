@@ -24,10 +24,15 @@ public class AiRepository {
     private final GenerativeModelFutures model;
 
     public AiRepository() {
-        // initialize Gemini 2.5 Flash Lite
+        // initialize Gemini
         GenerativeModel gm = FirebaseVertexAI.getInstance()
                 .generativeModel("gemini-2.5-flash-lite");
         this.model = GenerativeModelFutures.from(gm);
+    }
+
+    // constructor for testing
+    public AiRepository(GenerativeModelFutures model) {
+        this.model = model;
     }
 
     @SuppressLint("DefaultLocale")
@@ -94,6 +99,4 @@ public class AiRepository {
         // send both history and the new prompt
         return model.generateContent(contents);
     }
-
-
 }
