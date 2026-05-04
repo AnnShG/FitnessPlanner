@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+// Purpose - to hold and manage UI filter state with sync update
 public class FilterViewModel extends ViewModel {
     private final MutableLiveData<List<Long>> exerciseFilters = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<Long>> workoutFilters = new MutableLiveData<>(new ArrayList<>());
