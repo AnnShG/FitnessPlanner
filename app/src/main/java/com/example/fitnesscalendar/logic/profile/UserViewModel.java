@@ -21,6 +21,12 @@ public class UserViewModel extends AndroidViewModel {
         this.repository = new UserRepository(application);
     }
 
+    // constructor for testing
+    public UserViewModel(@NonNull Application application, UserRepository repository) {
+        super(application);
+        this.repository = repository;
+    }
+
     public LiveData<UserWithGoals> getLoggedInUser() {
         return repository.getLatestUser();
     }
