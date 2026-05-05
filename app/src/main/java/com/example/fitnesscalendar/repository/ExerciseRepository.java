@@ -21,7 +21,6 @@ import java.util.concurrent.Executors;
 import lombok.Getter;
 
 public class ExerciseRepository {
-
     private final ExerciseDao exerciseDao;
     private final CategoryDao categoryDao;
     private final StepDao stepDao;
@@ -47,12 +46,23 @@ public class ExerciseRepository {
         allExerciseSummaries = exerciseDao.getExerciseSummaries();
     }
 
-    public LiveData<List<ExerciseSummary>> getExerciseSummaries() {
-        return allExerciseSummaries;
+    // for testing
+    public ExerciseRepository(ExerciseDao exerciseDao, StepDao stepDao, CategoryDao categoryDao) {
+        this.exerciseDao = exerciseDao;
+        this.stepDao = stepDao;
+        this.categoryDao = categoryDao;
+
+        this.allFullExerciseRecords = exerciseDao.getFullExerciseRecords();
+        this.allExerciseSummaries = exerciseDao.getExerciseSummaries();
     }
 
     // this method inserts steps and categories inside the exercise (WRITING into DB) in the bg to not freeze the UI
     public void insertFullExercise(Exercise exercise, List<Step> steps, List<Long> categoryIds) {
+        // Validation: Title and at least one category are required for exercise creation
+        if (exercise.title == null || exercise.title.trim().isEmpty() || categoryIds == null || categoryIds.isEmpty()) {
+            return; // Exercise is not saved to database
+        }
+
         // use the fixed thread pool defined at the top
         databaseExecutor.execute(() -> {
 

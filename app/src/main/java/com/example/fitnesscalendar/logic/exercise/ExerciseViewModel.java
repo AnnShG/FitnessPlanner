@@ -43,9 +43,6 @@ public class ExerciseViewModel extends AndroidViewModel {
     public String notes;
     @Setter
     @Getter
-    public String difficultyLevel;
-    @Setter
-    @Getter
     public Boolean userCreated;
 
     private final ExerciseRepository exerciseRepository;
@@ -54,18 +51,24 @@ public class ExerciseViewModel extends AndroidViewModel {
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>("");
     public final LiveData<List<FullExerciseRecord>> filteredExercises;
 
+    // constructor
     public ExerciseViewModel(@NotNull Application app) {
+        this(app, new ExerciseRepository(app), new UserRepository(app));
+    }
+
+    // testing
+    public ExerciseViewModel(@NotNull Application app, ExerciseRepository exerciseRepository, UserRepository userRepository) {
         super(app);
-        exerciseRepository = new ExerciseRepository(app);
-        this.userRepository = new UserRepository(app);
+        this.exerciseRepository = exerciseRepository;
+        this.userRepository = userRepository;
 
         LiveData<Pair<List<Long>, String>> combined = new CombinedLiveData<>(filterIds, searchQuery);
 
-        filteredExercises = Transformations.switchMap(combined, pair -> {
-            List<Long> ids = pair.first;
-            String query = pair.second;
+        this.filteredExercises = Transformations.switchMap(combined, pair -> {
+            List<Long> ids = (pair != null && pair.first != null) ? pair.first : new ArrayList<>();
+            String query = (pair != null && pair.second != null) ? pair.second : "";
 
-            if ((ids == null || ids.isEmpty()) && (query == null || query.isEmpty())) {
+            if (ids.isEmpty() && query.isEmpty()) {
                 return exerciseRepository.getAllFullExercises();
             }
             return exerciseRepository.getExercisesFilteredAndSearched(ids, query);
@@ -98,9 +101,6 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     public void deleteExercise(long id) {
         exerciseRepository.deleteFullExercise(id);
-    }
-    public void loadExercisesByCategory(List<Long> ids) {
-        filterIds.setValue(ids);
     }
 
     public void setFilters(List<Long> ids) {
