@@ -24,7 +24,6 @@ import java.util.List;
 public class WorkoutDaoTest {
     private AppDatabase db;
     private WorkoutDao workoutDao;
-    private UserDao userDao;
     private long userId;
 
     @Before
@@ -34,7 +33,7 @@ public class WorkoutDaoTest {
                 .allowMainThreadQueries()
                 .build();
         workoutDao = db.workoutDao();
-        userDao = db.userDao();
+        UserDao userDao = db.userDao();
 
         // user is required for workout creation
         User user = new User();
