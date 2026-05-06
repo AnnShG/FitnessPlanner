@@ -9,6 +9,10 @@ android {
         version = release(36)
     }
 
+    jacoco {
+        version '0.8.8'
+    }
+
     defaultConfig {
         applicationId "com.example.fitnesscalendar"
         minSdk 24
@@ -34,6 +38,15 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+
+    buildTypes {
+        debug {
+            // Enable coverage for unit tests
+            enableUnitTestCoverage true
+            // Enable coverage for instrumentation tests
+            enableAndroidTestCoverage true
+        }
     }
 }
 
