@@ -39,4 +39,11 @@ public class Exercise {
 
     @ColumnInfo(name = "user_created")
     public Boolean userCreated; // true for user-created, false for system-provided
+
+    public Exercise() {
+    }
+
+    public Exercise(String title) {
+        this.title = title;
+    }
 }

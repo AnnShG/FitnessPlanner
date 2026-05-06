@@ -8,7 +8,6 @@ import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 
 @Data
@@ -33,8 +32,9 @@ public class User {
 
     public User() {}
 
+    // initialised data
     public User(String name) {
         this.name = name;
-        this.createdAt = new java.util.Date(); // Initialize the date here
+        this.createdAt = new java.util.Date();
     }
 }

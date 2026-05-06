@@ -32,4 +32,12 @@ public class Step {
 
     @ColumnInfo(name = "step_number")
     public int stepNumber;
+
+    public Step() {}
+
+    public Step(long exerciseId, int stepNumber, String description) {
+        this.exerciseId = exerciseId;
+        this.description = description;
+        this.stepNumber = stepNumber;
+    }
 }
