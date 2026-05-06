@@ -3,6 +3,7 @@ package com.example.fitnesscalendar.database;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -50,6 +51,15 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract StepDao stepDao();
     public abstract WorkoutDao workoutDao();
     public abstract AiDao aiDao();
+
+    /**
+     * Allows setting a test instance of the database
+     * Used in instrumentation tests to provide an in-memory database
+     */
+    @VisibleForTesting
+    public static void setTestInstance(AppDatabase db) {
+        INSTANCE = db;
+    }
 
     /**
      * Database Lifecycle Callback.
