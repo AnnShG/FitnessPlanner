@@ -15,7 +15,7 @@ import java.util.List;
 @Dao
 public interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Category categories);
+    long insert(Category categories);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<Category> categories);
