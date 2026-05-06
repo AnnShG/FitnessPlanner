@@ -2,9 +2,9 @@ package com.example.fitnesscalendar.logic.workout;
 
 import android.app.Application;
 import android.util.Log;
-import android.util.Pair;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -68,11 +68,33 @@ public class WorkoutViewModel extends AndroidViewModel {
             if (user == null) return new MutableLiveData<>(new ArrayList<>());
 
             return Transformations.switchMap(combined, pair -> {
-                List<Long> ids = (pair.first != null) ? pair.first : new ArrayList<>();
-                String query = (pair.second != null) ? pair.second : "";
+                List<Long> ids = (pair != null && pair.first != null) ? pair.first : new ArrayList<>();
+                String query = (pair != null && pair.second != null) ? pair.second : "";
 
-                Log.d("FILTER_DEBUG", "Applying Filters - IDs: " + ids.size() + ", Query: " + query);
+                return workoutRepository.getWorkoutsFilteredAndSearched(
+                        user.user.id,
+                        ids,
+                        query
+                );
+            });
+        });
+    }
 
+    // for testing purposes
+    public WorkoutViewModel(@NotNull Application app, WorkoutRepository workoutRepo, UserRepository userRepo, AiRepository aiRepo) {
+        super(app);
+        this.workoutRepository = workoutRepo;
+        this.userRepository = userRepo;
+        this.aiRepository = aiRepo;
+
+        LiveData<Pair<List<Long>, String>> combined = new CombinedLiveData<>(filterIds, searchQuery);
+
+        filteredWorkouts = Transformations.switchMap(getLoggedInUser(), user -> {
+            if (user == null) return new MutableLiveData<>(new ArrayList<>());
+
+            return Transformations.switchMap(combined, pair -> {
+                List<Long> ids = (pair != null && pair.first != null) ? pair.first : new ArrayList<>();
+                String query = (pair != null && pair.second != null) ? pair.second : "";
                 return workoutRepository.getWorkoutsFilteredAndSearched(
                         user.user.id,
                         ids,
@@ -175,9 +197,9 @@ public class WorkoutViewModel extends AndroidViewModel {
             List<AiMessage> chatHistory = workoutRepository.getAiChatHistoryForUser(currentUserId);
 
             String lastAdvice = "";
-            for (AiMessage msg : chatHistory) {
-                if ("model".equals(msg.getRole())) {
-                    lastAdvice = msg.getContent();
+            for (int i = 0; i < chatHistory.size(); i++) {
+                if ("model".equals(chatHistory.get(i).getRole())) {
+                    lastAdvice = chatHistory.get(i).getContent();
                     break;
                 }
             }
@@ -224,9 +246,18 @@ public class WorkoutViewModel extends AndroidViewModel {
      * Helper class to combine two LiveData sources into a single pair.
      */
     public static class CombinedLiveData<F, S> extends MediatorLiveData<Pair<F, S>> {
+        private F lastFirst;
+        private S lastSecond;
+
         public CombinedLiveData(LiveData<F> first, LiveData<S> second) {
-            addSource(first, value -> setValue(new Pair<>(value, second.getValue())));
-            addSource(second, value -> setValue(new Pair<>(first.getValue(), value)));
+            addSource(first, value -> {
+                lastFirst = value;
+                setValue(new Pair<>(lastFirst, lastSecond));
+            });
+            addSource(second, value -> {
+                lastSecond = value;
+                setValue(new Pair<>(lastFirst, lastSecond));
+            });
         }
     }
 
