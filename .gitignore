@@ -8,6 +8,6 @@
 .cxx
 local.properties
 /.idea
-
+deploymentTargetSelector
 app_key
 app_key.jks
