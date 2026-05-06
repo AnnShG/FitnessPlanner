@@ -42,6 +42,13 @@ public class WorkoutRepository {
         aiDao = db.aiDao();
     }
 
+    // tessting
+    public WorkoutRepository(WorkoutDao workoutDao, CalendarDayDao calendarDayDao, AiDao aiDao) {
+        this.workoutDao = workoutDao;
+        this.calendarDao = calendarDayDao;
+        this.aiDao = aiDao;
+    }
+
     /**
      * Inserts a workout and links it to a list of exercises.
      */
