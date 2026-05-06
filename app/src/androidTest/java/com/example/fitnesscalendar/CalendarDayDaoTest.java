@@ -1,7 +1,6 @@
 package com.example.fitnesscalendar;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
@@ -15,7 +14,6 @@ import com.example.fitnesscalendar.dao.CalendarDayDao;
 import com.example.fitnesscalendar.dao.UserDao;
 import com.example.fitnesscalendar.dao.WorkoutDao;
 import com.example.fitnesscalendar.database.AppDatabase;
-import com.example.fitnesscalendar.entities.CalendarDay;
 import com.example.fitnesscalendar.entities.User;
 import com.example.fitnesscalendar.entities.Workout;
 import com.example.fitnesscalendar.relations.CalendarDayWorkoutCrossRef;
@@ -37,7 +35,6 @@ public class CalendarDayDaoTest {
 
     private AppDatabase db;
     private CalendarDayDao calendarDayDao;
-    private UserDao userDao;
     private WorkoutDao workoutDao;
     private long testUserId;
 
@@ -48,8 +45,8 @@ public class CalendarDayDaoTest {
                 .allowMainThreadQueries()
                 .build();
         calendarDayDao = db.calendarDayDao();
-        userDao = db.userDao();
         workoutDao = db.workoutDao();
+        UserDao userDao = db.userDao();
 
         // user is required for having the calendar
         User user = new User();
