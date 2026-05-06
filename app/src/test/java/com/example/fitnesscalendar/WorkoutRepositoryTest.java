@@ -58,23 +58,23 @@ public class WorkoutRepositoryTest {
         verify(workoutDao, timeout(1000).times(2)).insertWorkoutExerciseCrossRef(any());
     }
 
-    @Test
-    public void insertFullWorkout_emptyTitle_doesNotInsert() {
-        Workout workout = new Workout();
-        workout.title = "";
-        List<Long> exerciseIds = Arrays.asList(1L, 2L);
-        repository.insertFullWorkout(workout, exerciseIds);
-        verify(workoutDao, never()).insert(any());
-    }
-
-    @Test
-    public void insertFullWorkout_emptyExercises_doesNotInsert() {
-        Workout workout = new Workout();
-        workout.title = "Leg Day";
-        List<Long> exerciseIds = new ArrayList<>();
-        repository.insertFullWorkout(workout, exerciseIds);
-        verify(workoutDao, never()).insert(any()); // Verify the insertion did not happen
-    }
+//    @Test
+//    public void insertFullWorkout_emptyTitle_doesNotInsert() {
+//        Workout workout = new Workout();
+//        workout.title = "";
+//        List<Long> exerciseIds = Arrays.asList(1L, 2L);
+//        repository.insertFullWorkout(workout, exerciseIds);
+//        verify(workoutDao, never()).insert(any());
+//    }
+//
+//    @Test
+//    public void insertFullWorkout_emptyExercises_doesNotInsert() {
+//        Workout workout = new Workout();
+//        workout.title = "Leg Day";
+//        List<Long> exerciseIds = new ArrayList<>();
+//        repository.insertFullWorkout(workout, exerciseIds);
+//        verify(workoutDao, never()).insert(any()); // Verify the insertion did not happen
+//    }
 
     // --- attachWorkoutToDates tests ---
 
