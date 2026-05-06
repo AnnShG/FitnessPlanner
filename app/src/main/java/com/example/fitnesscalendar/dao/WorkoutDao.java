@@ -18,7 +18,6 @@ import java.util.List;
 
 @Dao
 public interface WorkoutDao {
-
     @Insert
     long insert(Workout workout);
 
@@ -38,6 +37,9 @@ public interface WorkoutDao {
 
     @Delete
     void delete(Workout workout);
+
+    @Query("SELECT * FROM workouts")
+    List<Workout> getAllWorkouts();
 
     @Query("DELETE FROM workout_exercise_cross_ref WHERE workout_id = :workoutId")
     void deleteExercisesForWorkout(long workoutId);
