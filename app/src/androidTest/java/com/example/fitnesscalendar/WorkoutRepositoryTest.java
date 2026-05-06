@@ -45,12 +45,10 @@ public class WorkoutRepositoryTest {
     @Before
     public void setup() {
         Context context = ApplicationProvider.getApplicationContext();
-        // Use a real in-memory DB for repo testing to ensure DAOs work together
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase.class)
                 .allowMainThreadQueries()
                 .build();
 
-        // Inject the in-memory database into the AppDatabase singleton for the Repository to pick up
         AppDatabase.setTestInstance(db);
 
         workoutDao = db.workoutDao();
@@ -59,7 +57,6 @@ public class WorkoutRepositoryTest {
         
         repository = new WorkoutRepository((Application) context);
         
-        // Setup initial user
         User user = new User();
         user.name = "Repo Test User";
         userId = userDao.insert(user);
@@ -68,7 +65,6 @@ public class WorkoutRepositoryTest {
     @After
     public void tearDown() {
         db.close();
-        // Reset the singleton after test
         AppDatabase.setTestInstance(null);
     }
 
@@ -79,12 +75,8 @@ public class WorkoutRepositoryTest {
         workout.ownerId = userId;
         
         List<Long> exerciseIds = new ArrayList<>();
-        // In a real scenario we'd insert exercises first
-        
         repository.insertFullWorkout(workout, exerciseIds);
         
-        // Since repo uses an executor, we need to wait or use a synchronous one.
-        // For now, let's wait a bit.
         TimeUnit.MILLISECONDS.sleep(500);
 
         List<Workout> workouts = workoutDao.getAllWorkouts();
@@ -105,14 +97,11 @@ public class WorkoutRepositoryTest {
 
         repository.attachWorkoutToDates(userId, workoutId, dates);
 
-        // Wait for executor
         TimeUnit.MILLISECONDS.sleep(500);
 
-        // Verify CalendarDay creation
         Long dayId = calendarDayDao.getDayIdByDate(userId, today.toEpochDay());
         Assert.assertNotNull("CalendarDay should have been created", dayId);
 
-        // Verify workout was linked to the day
         int count = calendarDayDao.getWorkoutCountForDay(dayId);
         Assert.assertEquals("Day should have 1 workout attached", 1, count);
     }
@@ -153,12 +142,7 @@ public class WorkoutRepositoryTest {
         repository.attachWorkoutToDates(userId, workoutId, dates);
         TimeUnit.MILLISECONDS.sleep(500);
 
-        // Trigger completion update
         repository.updateWorkoutCompletion(userId, workoutId, epochDay, true);
         TimeUnit.MILLISECONDS.sleep(500);
-
-        // We can verify this by checking the cross-ref table via a LiveData query
-        // or by adding a direct query to CalendarDayDao.
-        // For now, this verifies the repository call doesn't crash and the flow is executed.
     }
 }
