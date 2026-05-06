@@ -15,7 +15,7 @@ firebaseBom = "33.1.0"
 guava = "32.1.3-android"
 mockito = "5.7.0"
 coreTesting = "2.2.0"
-roomTesting = "2.8.4"
+roomTesting = "2.6.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
