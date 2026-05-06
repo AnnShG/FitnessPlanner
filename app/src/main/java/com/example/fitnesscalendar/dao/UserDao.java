@@ -41,9 +41,4 @@ public interface UserDao {
 
     @Query("SELECT COUNT(*) FROM users")
     int getUserCount();
-
-//    @Transaction
-//    @Query("SELECT * FROM users WHERE user_id = :id")
-//    public UsersWithWorkouts getUserWithWorkouts(long id);
-
 }
