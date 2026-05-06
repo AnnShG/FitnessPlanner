@@ -64,7 +64,7 @@ public class UserDaoTest {
 
     @Test
     public void getLatestUser_returnsFirstAvailableUser() throws InterruptedException {
-        // Insert two users to test user linit - 1 per device)
+        // Insert two users to test user linit - 1 per device
         User user1 = new User();
         user1.name = "First User";
         userDao.insert(user1);
