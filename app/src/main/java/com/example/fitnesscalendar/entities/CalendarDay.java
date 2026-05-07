@@ -8,9 +8,13 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(tableName = "calendar_days",
         indices = {@Index(value = {"user_id", "date"}, unique = true)},
         foreignKeys = @ForeignKey(entity = User.class,
@@ -27,4 +31,6 @@ public class CalendarDay {
 
     @ColumnInfo(name = "date")
     public Long date;
+
+
 }
