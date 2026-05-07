@@ -25,19 +25,6 @@ public interface CalendarDayDao {
     @Insert
     long insert(CalendarDay days); // insert a new day and return its auto-generated Primary Key
 
-    @Update
-    void update(CalendarDay days);
-
-   @Delete
-   void delete(CalendarDay days);
-
-    /**
-     * Retrieves a specific calendar day record by its user ID.
-     * Is used when the specific day is opened.
-     */
-    @Query("SELECT * FROM calendar_days WHERE user_id = :dayId")
-    CalendarDay getCalendarDayById(int dayId);
-
     /**
      * Ensures a CalendarDay record exists for a specific date before try to attach a workout to it.
      * @param userId The ID of the current user.
@@ -53,7 +40,7 @@ public interface CalendarDayDao {
             CalendarDay newDay = new CalendarDay();
             newDay.userId = userId;
             newDay.date = epochDay;
-            return insert(newDay);
+            return  insert(newDay);
         }
     }
 
@@ -63,6 +50,8 @@ public interface CalendarDayDao {
     @Query("SELECT calendar_day_id FROM calendar_days WHERE user_id = :userId AND date = :date")
     Long getDayIdByDate(long userId, long date);
 
+    @Query("SELECT COUNT(*) FROM calendar_day_workout_cross_ref")
+    int getCrossRefCount();
 
     // --- Many-to-Many Relationship Logic (Linking Workouts to Days) ---
 
@@ -103,15 +92,6 @@ public interface CalendarDayDao {
     LiveData<List<PlannedWorkoutInfo>> getUniquePlannedWorkouts(long userId);
 
     /**
-     * Completely removes a workout's plan from the calendar for a specific user.
-     * Triggered when the user clicks the 'Bin' icon on a workout card.
-     */
-//    @Query("DELETE FROM calendar_day_workout_cross_ref " +
-//            "WHERE workout_id = :workoutId " +
-//            "AND calendar_day_id IN (SELECT calendar_day_id FROM calendar_days WHERE user_id = :userId)")
-//    void deleteWorkoutFromCalendar(long userId, long workoutId);
-
-    /**
      * Clears all links for a specific workout before re-inserting new ones during Edit Mode.
      * This ensures that unselected dates are properly removed from the database.
      */
@@ -140,4 +120,16 @@ public interface CalendarDayDao {
             "WHERE workout_id = :workoutId AND calendar_day_id = " +
             "(SELECT calendar_day_id FROM calendar_days WHERE user_id = :userId AND date = :epochDay)")
     void updateWorkoutCompletion(long userId, long workoutId, long epochDay, boolean completed);
+
+
+
+    /**
+     * Completely removes a workout's plan from the calendar for a specific user.
+     * Triggered when the user clicks the 'Bin' icon on a workout card.
+     */
+//    @Query("DELETE FROM calendar_day_workout_cross_ref " +
+//            "WHERE workout_id = :workoutId " +
+//            "AND calendar_day_id IN (SELECT calendar_day_id FROM calendar_days WHERE user_id = :userId)")
+//    void deleteWorkoutFromCalendar(long userId, long workoutId);
+
 }
