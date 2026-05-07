@@ -28,7 +28,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
