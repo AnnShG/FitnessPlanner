@@ -93,7 +93,7 @@ public class ExerciseRepository {
                     crossRef.categoryId = catId; // 3 (from the list) is assigned to categoryId, then 4
 
                     // Persist the relationship to the cross-reference table.
-                    exerciseDao.insertCategoryCrossRef(crossRef);
+                    exerciseDao.insertExerciseCategoryCrossRef(crossRef);
                 }
             }
         });
@@ -111,7 +111,7 @@ public class ExerciseRepository {
         databaseExecutor.execute(() -> {
             exerciseDao.update(exercise);
 
-            exerciseDao.deleteStepsByExerciseId(exercise.getExerciseId());
+            exerciseDao.deleteStepsByExerciseId(exercise.getExerciseId()); // To present duplicating the rows and UI data
             if (steps != null) {
                 for (Step step : steps) {
                     step.setExerciseId(exercise.getExerciseId());
@@ -125,7 +125,7 @@ public class ExerciseRepository {
                     ExerciseCategoryCrossRef ref = new ExerciseCategoryCrossRef();
                     ref.exerciseId = exercise.getExerciseId();
                     ref.categoryId = catId;
-                    exerciseDao.insertCategoryCrossRef(ref);
+                    exerciseDao.insertExerciseCategoryCrossRef(ref);
                 }
             }
         });
@@ -133,8 +133,8 @@ public class ExerciseRepository {
 
     public void deleteFullExercise(long id) {
         databaseExecutor.execute(() -> {
-            exerciseDao.deleteStepsByExerciseId(id);
-            exerciseDao.deleteCategoryCrossRefsByExerciseId(id);
+//            exerciseDao.deleteStepsByExerciseId(id);
+//            exerciseDao.deleteCategoryCrossRefsByExerciseId(id);
 
             Exercise exercise = new Exercise();
             exercise.setExerciseId(id);
