@@ -10,6 +10,7 @@ import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.fitnesscalendar.entities.Category;
+import com.example.fitnesscalendar.entities.Exercise;
 import com.example.fitnesscalendar.entities.Workout;
 import com.example.fitnesscalendar.relations.FullWorkoutRecord;
 import com.example.fitnesscalendar.relations.WorkoutExerciseCrossRef;
@@ -32,6 +33,12 @@ public interface WorkoutDao {
     @Query("SELECT * FROM workouts WHERE workout_id = :workoutId")
     LiveData<FullWorkoutRecord> getFullWorkoutById(long workoutId);
 
+    @Transaction
+    @Query("SELECT exercises.* FROM exercises " +
+            "INNER JOIN workout_exercise_cross_ref ON exercises.exercise_id = workout_exercise_cross_ref.exercise_id " +
+            " WHERE workout_exercise_cross_ref.workout_id = :workoutId ")
+    LiveData<List<Exercise>> getExercisesForWorkout(long workoutId);
+
     @Update
     void update(Workout workout);
 
@@ -41,6 +48,7 @@ public interface WorkoutDao {
     @Query("SELECT * FROM workouts")
     List<Workout> getAllWorkouts();
 
+    // Deletes the links between a workout and an exercise (the row in a join table)
     @Query("DELETE FROM workout_exercise_cross_ref WHERE workout_id = :workoutId")
     void deleteExercisesForWorkout(long workoutId);
 
@@ -50,6 +58,7 @@ public interface WorkoutDao {
             "AND is_completed = 0")
     void deleteOnlyPlannedWorkoutsFromCalendar(long userId, long workoutId);
 
+    // TEST
     @Transaction
     @Query("SELECT DISTINCT w.* FROM workouts w " +
             "INNER JOIN workout_exercise_cross_ref we ON w.workout_id = we.workout_id " +
