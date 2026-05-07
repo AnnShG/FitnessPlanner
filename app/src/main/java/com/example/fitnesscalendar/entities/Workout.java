@@ -6,9 +6,13 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(
         tableName = "workouts",
         foreignKeys = @ForeignKey(
@@ -41,4 +45,11 @@ public class  Workout {
 
     @ColumnInfo(name = "user_created")
     public Boolean userCreated;
+
+    public Workout(String title, Integer colour, Long ownerId) {
+        this.title = title;
+        this.colour = colour;
+        this.ownerId = ownerId;
+        this.userCreated = true; // default
+    }
 }
