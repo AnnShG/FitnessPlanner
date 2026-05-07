@@ -9,6 +9,7 @@ import androidx.room.ColumnInfo;
  */
 public class DateColourResult {
     public Long date;
+    @ColumnInfo(name = "colour")
     public Integer colour;
     public String title;
 
