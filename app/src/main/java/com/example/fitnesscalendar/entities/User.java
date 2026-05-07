@@ -9,7 +9,6 @@ import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-
 @Data
 @AllArgsConstructor
 @Entity(tableName = "users")
@@ -35,6 +34,12 @@ public class User {
     // initialised data
     public User(String name) {
         this.name = name;
-        this.createdAt = new java.util.Date();
+        this.createdAt = new Date();
+    }
+
+    public User(String name, String other) {
+        this.name = name;
+        this.birthDate = new Date();
+        this.gender = other;
     }
 }
