@@ -286,7 +286,7 @@ public class WorkoutDaoTest {
 
         // Verify the workout and exercise still exist in the DB
         Assert.assertNotNull(workoutDao.getFullWorkoutById(wId));
-        Assert.assertNotNull(exerciseDao.getExerciseById(exId));
+        Assert.assertNotNull(exerciseDao.getFullExerciseById(exId));
     }
 
     @Test
@@ -341,7 +341,7 @@ public class WorkoutDaoTest {
 
 
     @Test
-    public void getAlllCategories() throws InterruptedException {
+    public void getAllCategories() throws InterruptedException {
         Category cat1 = new Category(null, "Strength", "TYPE");
         Category cat2 = new Category(null, "Cardio", "TYPE");
 
