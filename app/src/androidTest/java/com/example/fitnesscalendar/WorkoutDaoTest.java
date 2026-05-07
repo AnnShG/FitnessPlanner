@@ -18,8 +18,6 @@ import com.example.fitnesscalendar.entities.Exercise;
 import com.example.fitnesscalendar.entities.User;
 import com.example.fitnesscalendar.entities.Workout;
 import com.example.fitnesscalendar.relations.CalendarDayWorkoutCrossRef;
-import com.example.fitnesscalendar.relations.ExerciseCategoryCrossRef;
-import com.example.fitnesscalendar.relations.FullWorkoutRecord;
 import com.example.fitnesscalendar.relations.WorkoutExerciseCrossRef;
 
 import org.junit.After;
@@ -29,7 +27,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Collections;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
