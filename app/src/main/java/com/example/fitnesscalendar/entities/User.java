@@ -37,7 +37,7 @@ public class User {
         this.createdAt = new Date();
     }
 
-    public User(String name, String other) {
+    public User(String name, String birthDate, String other) {
         this.name = name;
         this.birthDate = new Date();
         this.gender = other;
