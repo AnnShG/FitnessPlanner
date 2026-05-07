@@ -8,7 +8,7 @@ import androidx.room.ColumnInfo;
  */
 public class PlannedWorkoutInfo {
     @ColumnInfo(name = "workout_id")
-    public long workout_id;
+    public long workoutId;
     public String title;
     public Integer colour;
 }

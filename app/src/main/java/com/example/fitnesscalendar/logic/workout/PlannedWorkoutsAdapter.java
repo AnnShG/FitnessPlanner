@@ -59,7 +59,7 @@ public class PlannedWorkoutsAdapter extends RecyclerView.Adapter<PlannedWorkouts
         // Listeners for the actions
         holder.binding.btnDeletePlan.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onDelete(item.workout_id);
+                listener.onDelete(item.workoutId);
             }
         });
 
