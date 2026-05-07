@@ -54,7 +54,7 @@ public class ExerciseRepositoryTest {
 
         verify(stepDao, timeout(1000).times(2)).insert(any(Step.class));
 
-        verify(exerciseDao, timeout(1000).times(3)).insertCategoryCrossRef(any());
+        verify(exerciseDao, timeout(1000).times(3)).insertExerciseCategoryCrossRef(any());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class ExerciseRepositoryTest {
         verify(stepDao, timeout(1000)).insert(any());
 
         verify(exerciseDao, timeout(1000)).deleteCategoryCrossRefsByExerciseId(15L);
-        verify(exerciseDao, timeout(1000).times(1)).insertCategoryCrossRef(any());
+        verify(exerciseDao, timeout(1000).times(1)).insertExerciseCategoryCrossRef(any());
     }
 
     @Test
