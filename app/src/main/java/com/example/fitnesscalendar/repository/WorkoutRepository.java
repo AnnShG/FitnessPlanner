@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 
 import com.example.fitnesscalendar.dao.AiDao;
 import com.example.fitnesscalendar.dao.CalendarDayDao;
+import com.example.fitnesscalendar.dao.CategoryDao;
 import com.example.fitnesscalendar.dao.WorkoutDao;
 import com.example.fitnesscalendar.database.AppDatabase;
 import com.example.fitnesscalendar.entities.AiMessage;
@@ -30,6 +31,7 @@ public class WorkoutRepository {
 
     private final WorkoutDao workoutDao;
     private final CalendarDayDao calendarDao;
+    private final CategoryDao categoryDao;
     public AiDao aiDao;
 
     // A dedicated thread pool for database operations to prevent blocking the UI
@@ -39,13 +41,15 @@ public class WorkoutRepository {
         AppDatabase db = AppDatabase.getDatabase(app);
         workoutDao = db.workoutDao();
         calendarDao = db.calendarDayDao();
+        categoryDao = db.categoryDao();
         aiDao = db.aiDao();
     }
 
     // tessting
-    public WorkoutRepository(WorkoutDao workoutDao, CalendarDayDao calendarDayDao, AiDao aiDao) {
+    public WorkoutRepository(WorkoutDao workoutDao, CalendarDayDao calendarDayDao, CategoryDao categoryDao, AiDao aiDao) {
         this.workoutDao = workoutDao;
         this.calendarDao = calendarDayDao;
+        this.categoryDao = categoryDao;
         this.aiDao = aiDao;
     }
 
@@ -68,6 +72,7 @@ public class WorkoutRepository {
         });
     }
 
+    //
     public LiveData<List<FullWorkoutRecord>> getFullWorkoutRecords(long userId) {
         return workoutDao.getFullWorkoutRecords(userId);
     }
@@ -76,6 +81,7 @@ public class WorkoutRepository {
         return workoutDao.getFullWorkoutById(id);
     }
 
+    //
     /**
      * Updates an existing workout and synchronizes its exercise list.
      */
@@ -99,6 +105,7 @@ public class WorkoutRepository {
         });
     }
 
+    //
     public void deleteWorkout(Workout workout) {
         databaseExecutor.execute(() -> {
             workoutDao.delete(workout); // clean workout table
@@ -124,6 +131,7 @@ public class WorkoutRepository {
         });
     }
 
+    //
     /**
      * Retrieves the data needed for drawing calendar event dots.
      */
@@ -131,6 +139,7 @@ public class WorkoutRepository {
         return calendarDao.getCalendarWorkoutDots(userId);
     }
 
+    //
     /**
      * Retrieves unique workouts currently found on the user's calendar.
      */
@@ -144,6 +153,7 @@ public class WorkoutRepository {
         });
     }
 
+    //
     /**
      * Syncs a workout schedule during Edit Mode - select/unselect operations.
      * Respects the completion status of existing workouts.
@@ -173,7 +183,6 @@ public class WorkoutRepository {
         });
     }
 
-
     public LiveData<List<DateColourResult>> getWorkoutsForSpecificDay(long userId, long epochDay) {
         return calendarDao.getWorkoutsForSpecificDay(userId, epochDay);
     }
@@ -190,30 +199,37 @@ public class WorkoutRepository {
         });
     }
 
+    //
     // receives the chat history from the DB for a specific user
     public List<AiMessage> getAiChatHistoryForUser(long userId) {
         return aiDao.getChatHistoryForUser(userId);
     }
 
+    //
     public void saveAiMessage(AiMessage message) {
         AppDatabase.databaseWriteExecutor.execute(() -> aiDao.insert(message));
     }
 
+    //
     public LiveData<List<FullWorkoutRecord>> getWorkoutsFilteredAndSearched(long userId, List<Long> categoryIds, String query) {
         if (categoryIds == null || categoryIds.isEmpty()) {
             return workoutDao.getWorkoutsBySearchOnly(userId, query);
         } else {
-            return workoutDao.getWorkoutsFiltered(userId, categoryIds, query);
+            return workoutDao.getWorkoutsFilteredAndSearched(userId, categoryIds, query);
         }
     }
 
+    //
     public LiveData<List<Category>> getAllCategories() {
-        return workoutDao.getAllCategories();
+        return categoryDao.getAllCategories();
     }
 
+    //
     public LiveData<Integer> getTotalWorkoutsInMonth(long start, long end) {
         return workoutDao.getTotalWorkoutsInMonth(start, end);
     }
+
+    //
     public LiveData<Integer> getCompletedWorkoutsInMonth(long start, long end) {
         return workoutDao.getCompletedWorkoutsInMonth(start, end);
     }
