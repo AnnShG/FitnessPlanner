@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.example.fitnesscalendar.dao.AiDao;
 import com.example.fitnesscalendar.dao.CalendarDayDao;
+import com.example.fitnesscalendar.dao.CategoryDao;
 import com.example.fitnesscalendar.dao.WorkoutDao;
 import com.example.fitnesscalendar.entities.AiMessage;
 import com.example.fitnesscalendar.entities.Workout;
@@ -35,12 +36,14 @@ public class WorkoutRepositoryTest {
     @Mock
     private CalendarDayDao calendarDao;
     @Mock
+    private CategoryDao categoryDao;
+    @Mock
     private AiDao aiDao;
 
     @Before
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        repository = new WorkoutRepository(workoutDao, calendarDao, aiDao);
+        repository = new WorkoutRepository(workoutDao, calendarDao, categoryDao, aiDao);
     }
 
     // --- insertFullWorkout tests ---
@@ -164,7 +167,7 @@ public class WorkoutRepositoryTest {
     public void getWorkoutsFilteredAndSearched_withCategories_usesFilteredQuery() {
         List<Long> cats = Arrays.asList(1L);
         repository.getWorkoutsFilteredAndSearched(1L, cats, "run");
-        verify(workoutDao).getWorkoutsFiltered(1L, cats, "run");
+        verify(workoutDao).getWorkoutsFilteredAndSearched(1L, cats, "run");
     }
 
     @Test
@@ -185,7 +188,7 @@ public class WorkoutRepositoryTest {
         verify(calendarDao).getWorkoutsForSpecificDay(1L, 12345L);
 
         repository.getAllCategories();
-        verify(workoutDao).getAllCategories();
+        verify(categoryDao).getAllCategories();
     }
 
     // --- Statistics and AI tests ---
