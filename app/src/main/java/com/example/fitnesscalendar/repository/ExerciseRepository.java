@@ -111,7 +111,7 @@ public class ExerciseRepository {
         databaseExecutor.execute(() -> {
             exerciseDao.update(exercise);
 
-            exerciseDao.deleteStepsByExerciseId(exercise.getExerciseId()); // To present duplicating the rows and UI data
+            stepDao.deleteStepsByExerciseId(exercise.getExerciseId()); // To present duplicating the rows and UI data
             if (steps != null) {
                 for (Step step : steps) {
                     step.setExerciseId(exercise.getExerciseId());
