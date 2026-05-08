@@ -19,10 +19,11 @@ public interface StepDao {
     @Update
     void update(Step step);
 
-    @Delete
-    void delete(Step step);
-
     @Query("SELECT * FROM steps WHERE exercise_id = :exerciseId ORDER BY step_number ASC")
     List<Step> getStepsForExercise(long exerciseId);
+
+    // Delete existing steps before inserting new ones to avoid duplicates
+    @Query("DELETE FROM steps WHERE exercise_id = :exerciseId")
+    void deleteStepsByExerciseId(long exerciseId);
 }
 
