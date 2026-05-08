@@ -85,4 +85,19 @@ public class GoalDaoTest {
         Assert.assertTrue("Goals should be gone because their owner was deleted", orphanGoals.isEmpty());
     }
 
+    @Test
+    public void updateGoal_updatesDataInDatabase() {
+        Goal goal = new Goal(userId, "Lose Weight", true);
+        long id = goalDao.insert(goal);
+        goal.setGoalId(id);
+
+        // Modify the object
+        goal.setGoalTitle("Get Fit");
+
+        goalDao.update(goal);
+
+        Goal updatedGoal = goalDao.getGoalById(id);
+        Assert.assertEquals("Get Fit", updatedGoal.getGoalTitle());
+    }
+
 }
