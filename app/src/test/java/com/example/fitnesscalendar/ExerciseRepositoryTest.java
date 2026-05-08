@@ -71,7 +71,7 @@ public class ExerciseRepositoryTest {
         verify(exerciseDao, timeout(1000)).update(exercise);
 
         // Check resync logic for steps and categories
-        verify(exerciseDao, timeout(1000)).deleteStepsByExerciseId(15L);
+        verify(stepDao, timeout(1000)).deleteStepsByExerciseId(15L);
         verify(stepDao, timeout(1000)).insert(any());
 
         verify(exerciseDao, timeout(1000)).deleteCategoryCrossRefsByExerciseId(15L);
@@ -84,8 +84,6 @@ public class ExerciseRepositoryTest {
 
         repository.deleteFullExercise(idToDelete);
 
-        verify(exerciseDao, timeout(1000)).deleteStepsByExerciseId(idToDelete);
-        verify(exerciseDao, timeout(1000)).deleteCategoryCrossRefsByExerciseId(idToDelete);
         verify(exerciseDao, timeout(1000)).delete(argThat(ex -> ex.getExerciseId() == idToDelete));
     }
 
