@@ -2,7 +2,6 @@ package com.example.fitnesscalendar.logic.filter;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;

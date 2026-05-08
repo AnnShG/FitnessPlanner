@@ -6,10 +6,14 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 // step is a child of Exercise
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(
         tableName = "steps",
         foreignKeys = @ForeignKey(
@@ -32,8 +36,6 @@ public class Step {
 
     @ColumnInfo(name = "step_number")
     public int stepNumber;
-
-    public Step() {}
 
     public Step(long exerciseId, int stepNumber, String description) {
         this.exerciseId = exerciseId;

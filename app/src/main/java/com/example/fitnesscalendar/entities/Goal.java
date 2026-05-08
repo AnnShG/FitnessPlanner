@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 // 1:M
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity(
         tableName = "goals",
@@ -40,8 +41,6 @@ public class Goal {
     @ColumnInfo(name = "is_custom")
     public boolean isCustom;
 
-
-    public Goal() {}
 
     // 2. Add this constructor for your tests to use
     public Goal(long userId, String goalTitle, boolean isCustom) {

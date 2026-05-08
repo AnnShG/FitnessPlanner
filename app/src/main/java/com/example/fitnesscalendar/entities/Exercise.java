@@ -46,4 +46,9 @@ public class Exercise {
     public Exercise(String title) {
         this.title = title;
     }
+
+    public Exercise(String title, Long ownerId) {
+        this.title = title;
+        this.ownerId = ownerId;
+    }
 }

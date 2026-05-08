@@ -2,6 +2,7 @@ package com.example.fitnesscalendar.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -26,4 +27,8 @@ public class Category {
 
     @ColumnInfo(name = "category_group")
     public String categoryGroup;
+
+    public Category(String name) {
+        this.name = name;
+    }
 }
