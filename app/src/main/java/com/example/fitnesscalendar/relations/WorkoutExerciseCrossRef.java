@@ -8,6 +8,13 @@ import androidx.room.Index;
 import com.example.fitnesscalendar.entities.Exercise;
 import com.example.fitnesscalendar.entities.Workout;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(
         tableName = "workout_exercise_cross_ref",
         primaryKeys = {"workout_id", "exercise_id"},
