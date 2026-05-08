@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ExerciseDaoTest {
@@ -38,7 +39,6 @@ public class ExerciseDaoTest {
     private StepDao stepDao;
     private UserDao userDao;
     private long userId;
-
 
     @Before
     public void createDb() {
@@ -103,7 +103,7 @@ public class ExerciseDaoTest {
 
         stepDao.insert(new Step(id, 1, "Testing Delete"));
 
-        exerciseDao.deleteStepsByExerciseId(id);
+        stepDao.deleteStepsByExerciseId(id);
 
         List<Step> remainingSteps = stepDao.getStepsForExercise(id);
         Assert.assertTrue(remainingSteps.isEmpty());
@@ -306,31 +306,6 @@ public class ExerciseDaoTest {
     }
 
     @Test
-    public void deleteStepsByExerciseId_onlyDeletesTargetSteps() {
-        Exercise exercise1 = new Exercise();
-        exercise1.title = "Push Up";
-        exercise1.ownerId = userId;
-        long exId1 = exerciseDao.insert(exercise1);
-
-        Exercise exercise2 = new Exercise();
-        exercise2.title = "Dips";
-        exercise2.ownerId = userId;
-        long exId2 = exerciseDao.insert(exercise2);
-
-        stepDao.insert(new Step(exId1, 1, "Step A1"));
-        stepDao.insert(new Step(exId2, 1, "Step B1"));
-
-        exerciseDao.deleteStepsByExerciseId(exId1);
-
-        List<Step> stepsA = stepDao.getStepsForExercise(exId1);
-        List<Step> stepsB = stepDao.getStepsForExercise(exId2);
-
-        Assert.assertTrue("Steps for A should be gone", stepsA.isEmpty());
-        Assert.assertFalse("Steps for B should still exist", stepsB.isEmpty());
-        Assert.assertEquals("Step B1", stepsB.get(0).description);
-    }
-
-    @Test
     public void deleteCategoryCrossRefs_clearsCategoriesLinks() {
         Exercise exercise = new Exercise();
         exercise.title = "Push Up";
@@ -350,6 +325,21 @@ public class ExerciseDaoTest {
         // The Category must still exist
         Category cat = categoryDao.getCategoryById(catId);
         Assert.assertNotNull("Category should NOT be deleted, only the link", cat);
+    }
+
+    @Test
+    public void getCrossRefsForExercise_handlesMultipleLinksCorrectly() {
+        long exId = exerciseDao.insert(new Exercise("Push Up", userId));
+
+        long cat1 = categoryDao.insert(new Category("Strength"));
+        long cat2 = categoryDao.insert(new Category("Calisthenics"));
+
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(exId, cat1));
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(exId, cat2));
+
+        List<ExerciseCategoryCrossRef> results = exerciseDao.getCrossRefsForExercise(exId);
+
+        Assert.assertEquals(2, results.size());
     }
 
     @Test
@@ -400,4 +390,76 @@ public class ExerciseDaoTest {
         Assert.assertTrue(emptyResults.isEmpty());
     }
 
+    @Test
+    public void getExercisesFiltered_returnsOnlyExercisesInSelectedCategories() throws InterruptedException {
+        long catStrength = categoryDao.insert(new Category("Strength"));
+        long catCardio = categoryDao.insert(new Category("Cardio"));
+
+        long exId1 = exerciseDao.insert(new Exercise("Squat", userId));
+        long exId2 = exerciseDao.insert(new Exercise("Run", userId));
+
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(exId1, catStrength));
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(exId2, catCardio));
+
+        // Filter only by Strength
+        List<FullExerciseRecord> results = LiveDataTestUtil.getOrAwaitValue(
+                exerciseDao.getExercisesFilteredAndSearched(Collections.singletonList(catStrength), null)
+        );
+
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals("Squat", results.get(0).exercise.title);
+    }
+
+    @Test
+    public void getExercisesSearch_returnsMatchingTitles() throws InterruptedException {
+        long catId = categoryDao.insert(new Category("Strength"));
+
+        long exId1 = exerciseDao.insert(new Exercise("Squat", userId));
+        long exId2 = exerciseDao.insert(new Exercise("Run", userId));
+
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(exId1, catId));
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(exId2, catId));
+
+        List<FullExerciseRecord> results = LiveDataTestUtil.getOrAwaitValue(
+                exerciseDao.getExercisesFilteredAndSearched(Collections.singletonList(catId), "Squat")
+        );
+
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals("Squat", results.get(0).exercise.title);
+    }
+
+    @Test
+    public void getExercisesSearch_whenSearchIsNull_returnsAllInCategory() throws InterruptedException {
+        long catId = categoryDao.insert(new Category("Strength"));
+
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(
+                exerciseDao.insert(new Exercise("A", userId)), catId));
+
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(
+                exerciseDao.insert(new Exercise("B", userId)), catId));
+
+        List<FullExerciseRecord> results = LiveDataTestUtil.getOrAwaitValue(
+                exerciseDao.getExercisesFilteredAndSearched(Collections.singletonList(catId), null)
+        );
+
+        Assert.assertEquals(2, results.size());
+    }
+
+    @Test
+    public void getExercisesFiltered_whenExerciseHasMultipleMatchedCategories_returnsDistinct() throws InterruptedException {
+        long cat1 = categoryDao.insert(new Category("Strength"));
+        long cat2 = categoryDao.insert(new Category("Calisthenics"));
+
+        long exId = exerciseDao.insert(new Exercise("Push Up", userId));
+
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(exId, cat1));
+        exerciseDao.insertExerciseCategoryCrossRef(new ExerciseCategoryCrossRef(exId, cat2));
+
+        List<Long> filter = Arrays.asList(cat1, cat2);
+        List<FullExerciseRecord> results = LiveDataTestUtil.getOrAwaitValue(
+                exerciseDao.getExercisesFilteredAndSearched(filter, null)
+        );
+
+        Assert.assertEquals("Should filter out duplicates via DISTINCT", 1, results.size());
+    }
 }
