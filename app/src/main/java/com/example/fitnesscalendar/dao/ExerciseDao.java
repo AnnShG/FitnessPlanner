@@ -48,10 +48,6 @@ public interface ExerciseDao {
     @Delete
     void delete(Exercise exercise);
 
-    // Delete existing steps before inserting new ones to avoid duplicates
-    @Query("DELETE FROM steps WHERE exercise_id = :exerciseId")
-    void deleteStepsByExerciseId(long exerciseId);
-
     // Delete existing categories before inserting new ones to avoid duplicates
     @Query("DELETE FROM exercise_category_cross_ref WHERE exercise_id = :exerciseId")
     void deleteCategoryCrossRefsByExerciseId(long exerciseId);
