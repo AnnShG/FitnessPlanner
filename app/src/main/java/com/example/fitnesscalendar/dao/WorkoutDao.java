@@ -58,7 +58,6 @@ public interface WorkoutDao {
             "AND is_completed = 0")
     void deleteOnlyPlannedWorkoutsFromCalendar(long userId, long workoutId);
 
-    // TEST
     @Transaction
     @Query("SELECT DISTINCT w.* FROM workouts w " +
             "INNER JOIN workout_exercise_cross_ref we ON w.workout_id = we.workout_id " +
@@ -66,15 +65,12 @@ public interface WorkoutDao {
             "WHERE w.owner_id = :userId " +
             "AND (:searchQuery IS NULL OR w.title LIKE '%' || :searchQuery || '%') " +
             "AND ec.category_id IN (:categoryIds)")
-    LiveData<List<FullWorkoutRecord>> getWorkoutsFiltered(long userId, List<Long> categoryIds, String searchQuery);
+    LiveData<List<FullWorkoutRecord>> getWorkoutsFilteredAndSearched(long userId, List<Long> categoryIds, String searchQuery);
 
     @Transaction
     @Query("SELECT * FROM workouts WHERE owner_id = :userId " +
             "AND (:searchQuery IS NULL OR title LIKE '%' || :searchQuery || '%')")
     LiveData<List<FullWorkoutRecord>> getWorkoutsBySearchOnly(long userId, String searchQuery);
-
-    @Query("SELECT * FROM categories ORDER BY category_group ASC")
-    LiveData<List<Category>> getAllCategories();
 
     /**
      * Counts all workouts scheduled within a specific date range for a monthly view
