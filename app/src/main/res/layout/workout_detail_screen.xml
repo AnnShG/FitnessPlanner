@@ -59,6 +59,7 @@
                 android:id="@+id/colourIndicator"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_marginStart="12dp"
                 android:background="@drawable/workout_circle_indicator_green" />
 
         <TextView
@@ -66,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
 
             android:text="@string/workout_item_title"
             android:fontFamily="@font/lexend_font"

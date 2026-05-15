@@ -46,6 +46,8 @@
             android:id="@+id/exerciseTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
 
             android:fontFamily="@font/lexend_font"
             android:gravity="center"
@@ -55,8 +57,8 @@
             android:textStyle="bold"
 
             app:layout_constraintBottom_toBottomOf="@id/backButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/backButton"
+            app:layout_constraintEnd_toStartOf="@id/editExerciseButton"
             app:layout_constraintTop_toTopOf="@id/backButton"/>
 
         <ImageView
