@@ -44,30 +44,74 @@ classDiagram
         -SurveyViewModel viewModel
     }
     class SurveyViewModel {
-        name
-        birthDate
-        gender
-        selectedGoals
-        customGoal
-        toggleGoal(String)
-        saveUserProfileToDatabase()
+        -String name
+        -Date birthDate
+        -String gender
+        -Set~String~ selectedGoals
+        -String customGoal
+        +toggleGoal(String)
+        +saveUserProfileToDatabase()
     }
     class UserViewModel {
-        getLoggedInUser()
-        updateUser(User)
-        updateUserGoals(Long, List, String)
+        -UserRepository repository
+        +getLoggedInUser() LiveData~UserWithGoals~
+        +getProfileData() LiveData~UserWithGoals~
+        +updateUser(User)
+        +updateUserGoals(Long, List, String)
     }
     class UserRepository {
-        GOAL_LOSE_WEIGHT
-        GOAL_BUILD_MUSCLE
-        GOAL_GET_STRONGER
-        GOAL_STAY_FIT
-        GOAL_RECOVER_INJURY
-        GOAL_STAY_ACTIVE
+        -UserDao userDao
+        -GoalDao goalDao
+        -ExecutorService databaseExecutor
+        +GOAL_LOSE_WEIGHT : String
+        +GOAL_BUILD_MUSCLE : String
+        +GOAL_GET_STRONGER : String
+        +GOAL_STAY_FIT : String
+        +GOAL_RECOVER_INJURY : String
+        +GOAL_STAY_ACTIVE : String
+        -GOAL_SUBTITLES : Map~String,String~
+        +insertUserWithGoals(User, List~Goal~)
+        +getLatestUser() LiveData~UserWithGoals~
+        +updateGoal(Goal)
+        +updateUser(User)
+        +hasUser() boolean
+        +updateUserGoals(Long, List, String)
+    }
+    class UserDao {
+        +insert(User) long
+        +update(User)
+        +delete(User)
+        +deleteUserById(long)
+        +getUserWithGoals(long) LiveData~UserWithGoals~
+        +getLatestUser() LiveData~UserWithGoals~
+        +getAllUsers() LiveData~List~User~~
+        +getUserById(long) User
+        +getUserCount() int
+    }
+    class GoalDao {
+        +insert(Goal) long
+        +update(Goal)
+        +getGoalsForUser(long) List~Goal~
+        +getGoalById(long) Goal
+        +deleteGoalsByUserId(long)
+    }
+    class AppDatabase {
+        +getDatabase(Context) AppDatabase
+        +databaseWriteExecutor : ExecutorService
+        +userDao() UserDao
+        +goalDao() GoalDao
     }
     class User
     class Goal
+    class UserWithGoals
     class SharedPreferences
+    class ProfileScreenFragment {
+        -GoalAdapter goalAdapter
+        -UserViewModel viewModel
+    }
+    class GoalAdapter {
+        +setGoals(List~Goal~)
+    }
 
     SurveyPage1Fragment ..> SurveyViewModel : receives, but not uses
     SurveyPage2Fragment --> SurveyViewModel : name, birthDate, gender
@@ -77,6 +121,45 @@ classDiagram
     SurveyPage3Fragment ..> UserRepository : goals constants
     SurveyPage4Fragment --> SurveyViewModel : saveUserProfileToDatabase
     SurveyPage4Fragment ..> SharedPreferences : is_survey_completed
-    UserViewModel ..> User
-    UserViewModel ..> Goal
+    SurveyViewModel --> UserRepository : insertUserWithGoals
+    UserViewModel --> UserRepository : updateUser, updateUserGoals, getLatestUser
+    UserRepository --> UserDao
+    UserRepository --> GoalDao
+    UserRepository ..> AppDatabase : receives DAO and executor
+    UserRepository ..> User
+    UserRepository ..> Goal
+    UserDao ..> UserWithGoals : returns
+    ProfileScreenFragment --> UserViewModel : getProfileData
+    ProfileScreenFragment --> GoalAdapter : shows the goals list
+    ProfileScreenFragment ..> SurveyPage2Fragment : opens with isEditMode=true
+    ProfileScreenFragment ..> SurveyPage3Fragment : opens with isEditMode=true
+```
+
+# Navigation between the screens
+The transitions are described in navigation graph through actions:
+
+| From where | To where         | Action                                   |
+|------------|------------------|------------------------------------------|
+| Page 1     | Page 2           | `action_SurveyPage1_to_SurveyPage2`      |
+| Page 2     | Page 3           | `action_SurveyPage2_to_SurveyPage3`      |
+| Page 3     | Page 4           | `action_SurveyPage3_to_SurveyPage4`      |
+| Page 4     | CalendarHomePage | `action_SurveyPage4_to_CalendarHomePage`  (с `popUpTo`)|
+
+The button Back calls navigateUp() on the 2 and 3 screens. The button Back in absent on the 4th screen.
+
+```mermaid
+flowchart TD
+Start([Survey run]) --> P1["Page 1: Welcoming"]
+P1 -->|"button"| P2["Page 2: name, date of birth, gender"]
+P2 --> V2{"All fields are valid?"}
+V2 -- No --> P2
+V2 -- Yes --> P3["Page 3: goals"]
+P3 --> V3{"At least one goal is chosen?"}
+V3 -- Yes --> P3
+V3 -- Yes --> P4["Page 4: Finish"]
+P4 -->|"Continue"| Save[("Profile saving to DB")]
+Save --> Flag["SharedPreferences: is_survey_completed = true"]
+Flag --> Home([CalendarHomePage])
+P2 -.->|"Back"| P1
+P3 -.->|"Back"| P2
 ```
