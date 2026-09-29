@@ -25,6 +25,7 @@
             android:id="@+id/action_SurveyPage2_to_SurveyPage3"
             app:destination="@id/SurveyPage3" />
 
+<!--        allows to transfer the mode info on the screen-->
         <argument
             android:name="isEditMode"
             app:argType="boolean"
