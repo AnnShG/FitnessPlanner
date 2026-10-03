@@ -1,7 +1,7 @@
 # Survey Module
 
 ## 1. General Description
-The survey collects the user data after the first application running and it consists of 4 screens (fragments).
+The survey collects the user data after the first application running, and it consists of 4 screens (fragments).
 Also, the 2nd and 3rd screens can be used again in the "Edit Mode" (isEditMode), when the user changes his data.
 
 | Screen | Class                 | ViewBinding | Purpose                                                                   |
@@ -150,16 +150,42 @@ The button Back calls navigateUp() on the 2 and 3 screens. The button Back in ab
 ```mermaid
 flowchart TD
 Start([Survey run]) --> P1["Page 1: Welcoming"]
-P1 -->|"button"| P2["Page 2: name, date of birth, gender"]
+P1 -->|"Button"| P2["Page 2: Name, date of birth, gender"]
+P2 -.->|"Back"| P1
 P2 --> V2{"All fields are valid?"}
 V2 -- No --> P2
-V2 -- Yes --> P3["Page 3: goals"]
+V2 -- Yes --> P3["Page 3: Goals"]
 P3 --> V3{"At least one goal is chosen?"}
-V3 -- Yes --> P3
+P3 -.->|"Back"| P2
+V3 -- No --> P3
 V3 -- Yes --> P4["Page 4: Finish"]
 P4 -->|"Continue"| Save[("Profile saving to DB")]
 Save --> Flag["SharedPreferences: is_survey_completed = true"]
 Flag --> Home([CalendarHomePage])
-P2 -.->|"Back"| P1
-P3 -.->|"Back"| P2
 ```
+For transition to `CalendarHomePage` is used `setPopUpTo(R.id.SurveyPage1, true)`. This removes all survey screens (including the first) from the stack.
+
+---
+
+## 4. Two modes: onboarding and edit
+The screens 2 and 3 read argument `isEditMode` from `getArguments()` (false by default)
+
+|                         | Onboarding (`isEditMode = false`)                     | Edit (`isEditMode = true`)                                                      |
+|-------------------------|-------------------------------------------------------|---------------------------------------------------------------------------------|
+| Title                   | XML                                                   | "Edit my data" (screen 2), "Edit goals" (screen 3)                              |
+| Button `continueButton` | "Continue" leads to the next screen                   | "Save", saves to DB                                                             |
+| Button Back             | is visible                                            | `INVISIBLE`                                                                     |
+| Background              | initial XML                                           | other colour (`#FFFAFA` on screen 2, `home_page_background_colour` on screen 3) |
+| The values source       | from `SurveyViewModel` (if user already entered smth) | from DB through `UserViewModel.getLoggedInUser()`                               |
+| After tapping button    | transition to the next screen                         | writing to DB, clearing `SurveyViewModel`, Toast, `navigateUp()`                |
+
+---
+
+## 5. Survey screens
+### Screen 1: Welcoming
+
+**Files:** `SurveyPage1Fragment.java`, `survey_page_1.xml`
+
+The only action: button `binding.button` which redirects to screen 2 `action_SurveyPage1_to_SurveyPage2`. `SurveyViewModel` can be received but not used. A common ViewModel is created in Activity before the second screen.
+
+---
