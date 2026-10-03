@@ -15,4 +15,18 @@ This project is part of a Bachelor’s Thesis in Computer Science.
 - AI-Driven Insights - Integration with Gemini AI to generate personalized training recommendations based on weekly activity patterns
 - Progress Visualization - Interactive charts to track personal metrics and improvement
 
+### Project settings: Mermaid diagrams Markdown preview
+The docs in `docs/` use Mermaid diagrams. To see them rendered in the Android Studio Markdown preview:
 
+1. **Switch the IDE runtime to one with JCEF**
+   Find Action (double Shift) → *Choose Boot Java Runtime for the IDE* →
+   select **JetBrains Runtime JBR with JCEF** of the same version as *Current*
+   (avoid *fastdebug* builds) → restart the IDE.
+2. **Select the Chromium preview engine**
+   Settings → Languages & Frameworks → Markdown → *Preview rendering engine* → **Chromium browser**.
+   (This option is not available until step 1 is done; the default *Compose* engine does not render Mermaid.)
+3. **Install the Mermaid plugin**
+   Settings → Plugins → Marketplace → *Mermaid*.
+
+> After an Android Studio update, the runtime may be reset. If diagrams show up as plain code again, repeat steps 1–2.
+> To revert: *Choose Boot Java Runtime for the IDE* → **Use Default**.
