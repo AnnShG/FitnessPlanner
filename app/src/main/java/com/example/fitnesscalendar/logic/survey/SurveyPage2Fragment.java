@@ -190,6 +190,30 @@ public class SurveyPage2Fragment extends Fragment {
         );
     }
 
+    // Helper Method
+    private void handleGenderSelection(MaterialButton selectedButton, String genderValue) {
+        // save to ViewModel
+        surveyViewModel.setGender(genderValue);
+
+        int orangeStroke = ContextCompat.getColor(requireContext(), R.color.chip_selected_orange);
+        int grayStroke = ContextCompat.getColor(requireContext(), R.color.button_stroke_colour);
+
+        MaterialButton[] buttons = {binding.buttonMale, binding.buttonFemale, binding.buttonNoAnswer};
+
+        for (MaterialButton btn : buttons) {
+            // force background to stay white
+            btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE));
+
+            if (btn.getId() == selectedButton.getId()) {
+                btn.setStrokeColor(android.content.res.ColorStateList.valueOf(orangeStroke));
+                btn.setStrokeWidth(6);
+            } else {
+                btn.setStrokeColor(android.content.res.ColorStateList.valueOf(grayStroke));
+                btn.setStrokeWidth(2);
+            }
+        }
+    }
+
     private void restoreGenderUI(String gender) {
         switch (gender) {
             case "Male": handleGenderSelection(binding.buttonMale, "Male"); break;
@@ -215,30 +239,6 @@ public class SurveyPage2Fragment extends Fragment {
             NavHostFragment.findNavController(this).navigateUp();
         } else {
             Toast.makeText(getContext(), "Error: User session lost", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // Helper Method
-    private void handleGenderSelection(MaterialButton selectedButton, String genderValue) {
-        // save to ViewModel
-        surveyViewModel.setGender(genderValue);
-
-        int orangeStroke = ContextCompat.getColor(requireContext(), R.color.chip_selected_orange);
-        int grayStroke = ContextCompat.getColor(requireContext(), R.color.button_stroke_colour);
-
-        MaterialButton[] buttons = {binding.buttonMale, binding.buttonFemale, binding.buttonNoAnswer};
-
-        for (MaterialButton btn : buttons) {
-            // force background to stay white
-            btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE));
-
-            if (btn.getId() == selectedButton.getId()) {
-                btn.setStrokeColor(android.content.res.ColorStateList.valueOf(orangeStroke));
-                btn.setStrokeWidth(6);
-            } else {
-                btn.setStrokeColor(android.content.res.ColorStateList.valueOf(grayStroke));
-                btn.setStrokeWidth(2);
-            }
         }
     }
 
