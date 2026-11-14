@@ -199,18 +199,27 @@ public class WorkoutRepository {
         });
     }
 
-    //
     // receives the chat history from the DB for a specific user
     public List<AiMessage> getAiChatHistoryForUser(long userId) {
         return aiDao.getChatHistoryForUser(userId);
     }
 
-    //
     public void saveAiMessage(AiMessage message) {
-        AppDatabase.databaseWriteExecutor.execute(() -> aiDao.insert(message));
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            aiDao.insert(message); // new message insert
+
+            // check the current count
+            List<AiMessage> history = aiDao.getChatHistoryForUser(message.getUserId());
+
+            if (history.size() > 20) {
+                int toDelete = history.size() - 10;
+                for (int i = 0; i < toDelete; i++) {
+                    aiDao.delete(history.get(i));
+                }
+            }
+        });
     }
 
-    //
     public LiveData<List<FullWorkoutRecord>> getWorkoutsFilteredAndSearched(long userId, List<Long> categoryIds, String query) {
         if (categoryIds == null || categoryIds.isEmpty()) {
             return workoutDao.getWorkoutsBySearchOnly(userId, query);
@@ -219,7 +228,6 @@ public class WorkoutRepository {
         }
     }
 
-    //
     public LiveData<List<Category>> getAllCategories() {
         return categoryDao.getAllCategories();
     }
@@ -229,7 +237,6 @@ public class WorkoutRepository {
         return workoutDao.getTotalWorkoutsInMonth(start, end);
     }
 
-    //
     public LiveData<Integer> getCompletedWorkoutsInMonth(long start, long end) {
         return workoutDao.getCompletedWorkoutsInMonth(start, end);
     }

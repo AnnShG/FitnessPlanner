@@ -86,12 +86,13 @@ public class CalendarHomePageFragment extends Fragment implements CalendarAdapte
             if (userWithGoals != null) {
                 this.currentUserId = userWithGoals.user.id;
 
+                workoutViewModel.refreshAiInsight(userWithGoals, allUserPlans);
+
                 // Once the user is known, observes the workout "Dots" from the DB
                 // Automatically updates the main calendar dots whenever the DB changes
                 workoutViewModel.getWorkoutDotsForUser(currentUserId).observe(getViewLifecycleOwner(), plans -> {
                     if (plans != null) {
                         this.allUserPlans = plans;
-                        workoutViewModel.refreshAiInsight(userWithGoals, plans);
 
                         if (adapter != null) {
                             adapter.setPlannedWorkouts(plans);

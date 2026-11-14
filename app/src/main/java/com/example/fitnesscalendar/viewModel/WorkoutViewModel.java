@@ -195,15 +195,27 @@ public class WorkoutViewModel extends AndroidViewModel {
             // getting chat history from DB for this user
             List<AiMessage> chatHistory = workoutRepository.getAiChatHistoryForUser(currentUserId);
 
-            String lastAdvice = "";
+            AiMessage lastAiAdvice = null;
             for (int i = 0; i < chatHistory.size(); i++) {
                 if ("model".equals(chatHistory.get(i).getRole())) {
-                    lastAdvice = chatHistory.get(i).getContent();
+                    lastAiAdvice = chatHistory.get(i); // stores the whole object
                     break;
                 }
             }
 
-            String prompt = aiRepository.buildPrompt(userWithGoals, history, lastAdvice);
+            if (lastAiAdvice != null) {
+                long lastUpdateTime = lastAiAdvice.getTimestamp().getTime();
+                if ((System.currentTimeMillis() - lastUpdateTime) < sevenDaysInMillis) {
+                    // post the existing content to UI and stop, if not enough time has passed
+                    aiAdvice.postValue(lastAiAdvice.getContent());
+                    return;
+                }
+            }
+
+            isAiLoading.postValue(true);
+
+            String lastAdviceText = (lastAiAdvice != null) ? lastAiAdvice.getContent() : "";
+            String prompt = aiRepository.buildPrompt(userWithGoals, history, lastAdviceText);
 
             // save user request in local DB with currentUserId
             workoutRepository.saveAiMessage(new AiMessage(currentUserId, "user", prompt));

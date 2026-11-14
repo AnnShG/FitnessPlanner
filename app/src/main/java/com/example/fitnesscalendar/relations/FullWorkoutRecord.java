@@ -9,7 +9,7 @@ import com.example.fitnesscalendar.entities.Workout;
 
 import java.util.List;
 
-// query the entities - combines three tables - used to read data
+// query the entities - combines two tables - used to read data
 // fetch a workout with its exercises
 // Room load many-to-many relations (rows)
 public class FullWorkoutRecord {

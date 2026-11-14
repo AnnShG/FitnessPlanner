@@ -151,8 +151,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         return new CalendarViewHolder(dayText);
     }
 
-
-
     // runs for every cell in the calendar
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {

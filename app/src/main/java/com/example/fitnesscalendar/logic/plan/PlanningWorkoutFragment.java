@@ -14,7 +14,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.fitnesscalendar.R;
-import com.example.fitnesscalendar.databinding.PlanProgramScreenBinding;
+import com.example.fitnesscalendar.databinding.PlanningWorkoutScreenBinding;
 import com.example.fitnesscalendar.logic.calendar.CalendarAdapter;
 import com.example.fitnesscalendar.logic.calendar.CalendarManager;
 import com.example.fitnesscalendar.logic.workout.PlannedWorkoutsAdapter;
@@ -36,8 +36,8 @@ import lombok.NonNull;
  * 1. "Attach Mode": Selecting a workout and picking new days.
  * 2. "Edit Mode": Modifying the existing schedule of a previously planned workout.
  */
-public class PlanProgramFragment extends Fragment {
-    private PlanProgramScreenBinding binding;
+public class PlanningWorkoutFragment extends Fragment {
+    private PlanningWorkoutScreenBinding binding;
     private CalendarAdapter adapter;
     private PlannedWorkoutsAdapter plannedAdapter;
     private WorkoutViewModel workoutViewModel;
@@ -55,7 +55,7 @@ public class PlanProgramFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        binding = PlanProgramScreenBinding.inflate(inflater, container, false);
+        binding = PlanningWorkoutScreenBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 

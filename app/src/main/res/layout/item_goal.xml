@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginStart="10dp"
     android:paddingVertical="6dp"> <!-- distance between item goals-->
 
     <androidx.constraintlayout.widget.Guideline
@@ -23,7 +24,7 @@
 
     <TextView
         android:id="@+id/goalText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/goal_item_title"
         android:textSize="16sp"
@@ -34,7 +35,7 @@
 
     <TextView
         android:id="@+id/goalSubtitle"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textSize="12sp"

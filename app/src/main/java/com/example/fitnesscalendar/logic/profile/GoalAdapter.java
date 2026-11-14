@@ -30,7 +30,7 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalViewHolder
     @Override
     // builds new rows (frames) for adding the data to the screen
     public GoalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemGoalBinding binding = ItemGoalBinding.inflate(
+        ItemGoalBinding binding = ItemGoalBinding.inflate( // item_goal.xml
                 LayoutInflater.from(parent.getContext()), parent, false);
         return new GoalViewHolder(binding);
     }
