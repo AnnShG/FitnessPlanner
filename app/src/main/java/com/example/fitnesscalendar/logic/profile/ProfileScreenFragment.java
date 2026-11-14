@@ -84,18 +84,6 @@ public class ProfileScreenFragment extends Fragment {
                     .navigate(R.id.action_ProfileFragment_to_SurveyPage2, bundle);
         });
 
-
-        binding.feedbackRow.setOnClickListener(v -> {
-            String googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc_lZKgH7xRykT1Jq5sijYudYv2TC3iWczmcu81h4aVd5JKEg/viewform?usp=header";
-
-            try {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(googleFormUrl));
-                startActivity(intent);
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Unable to open feedback form", Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
 
     @Override
